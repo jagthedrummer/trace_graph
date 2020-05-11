@@ -1,21 +1,22 @@
 class Foo
-  def foo1
+  def foo1(keyword_arg: nil)
     puts "calling foo1"
+    return { wat: "foo1" }
   end
 
-  def foo2
+  def foo2(arg = nil, arg2 = 'wow')
     puts "calling foo2"
   end
 
   def foo_both
-    foo1
-    foo2
+    foo1(keyword_arg: 1)
+    foo2('bar')
   end
 
   def foo_both_with_private
-    foo1
+    foo1(keyword_arg: 1)
     foo_private
-    foo2
+    foo2('baz')
   end
 
   private

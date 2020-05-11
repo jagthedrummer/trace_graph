@@ -9,6 +9,8 @@ module TraceGraph
       @excluded_paths = options[:excluded_paths] || []
       @include_protected = options[:include_protected] || false
       @mark_duplicate_calls = options.key?(:mark_duplicate_calls) ? options[:mark_duplicate_calls] : true
+      @show_arguments = options[:show_arguments] || false
+      @show_return_values = options[:show_return_values] || false
 
       @trace_point = build_trace_point
       @top_node = TraceGraph::TraceNode.new("trace")
@@ -52,7 +54,7 @@ module TraceGraph
     end
 
     def add_node graph, node, parent
-      label = node.label
+      label = node.label.gsub("←","\n←").gsub("→","\n→")
       gnode = graph.add_nodes(label)
       if node.is_duplicate
         gnode[:color] = "red:white"
@@ -80,9 +82,19 @@ module TraceGraph
       end
     end
 
+    def extract_arguments(trace)
+      return {} unless trace.respond_to?(:parameters)
+      param_names = trace.parameters.map(&:last)
+      param_names.map { |n| [n, trace.binding.eval(n.to_s)] }.to_h
+    end
+
     def handle_call(tp)
       parent = @stack.last
       label = "#{tp.defined_class}##{tp.method_id}"
+      args = extract_arguments(tp)
+      if @show_arguments && args.any?
+        label = "#{label} →(#{args})"
+      end
       is_dupicate = false
       if @mark_duplicate_calls
         if @unique_node_counts[label]
@@ -106,6 +118,11 @@ module TraceGraph
     end
 
     def handle_return(tp)
+      puts "return value = #{tp.return_value}"
+      if @show_return_values && tp.return_value
+        last_node = @stack.last
+        last_node.label = "#{last_node.label} ←(#{tp.return_value})"
+      end
       @stack.pop
     end
 
