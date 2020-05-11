@@ -2,6 +2,9 @@ module TraceGraph
   class Tracer
     def initialize(options)
       @options = options
+      # We check included paths differently than excluded ones to allow nil to be bassed, to include everyting
+      @included_paths = options.key?(:included_paths) ? options[:included_paths] : []
+      @excluded_paths = options[:excluded_paths] || []
       @trace_point = build_trace_point
       @top_nodes = []
       @stack = []
@@ -29,10 +32,12 @@ module TraceGraph
 
     def build_trace_point
       TracePoint.new(:call,:return) do |tp|
-        if tp.event == :call
-          handle_call(tp)
-        elsif tp.event == :return
-          handle_return(tp)
+        if should_include_trace_line(tp)
+          if tp.event == :call
+            handle_call(tp)
+          elsif tp.event == :return
+            handle_return(tp)
+          end
         end
       end
     end
@@ -50,8 +55,30 @@ module TraceGraph
     end
 
     def handle_return(tp)
-      puts "handle_return"
       @stack.pop
+    end
+
+    def should_include_trace_line(tp)
+      should_include = false
+      @included_paths.each do |path|
+        path = path.is_a?(String) ? /#{path}/ : path
+        if tp.inspect =~ path
+          should_include = true
+        end
+      end
+      @excluded_paths.each do |path|
+        path = path.is_a?(String) ? /#{path}/ : path
+        if tp.inspect =~ path
+          should_include = false
+        end
+      end
+      klass = tp.defined_class
+      method = tp.method_id
+      public_methods = klass.public_methods(false) + klass.public_instance_methods(false)
+      unless public_methods.include?(method)
+        should_include = false
+      end
+      return should_include
     end
   end
 end

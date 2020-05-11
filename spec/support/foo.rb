@@ -4,7 +4,7 @@ class Foo
   end
 
   def foo2
-    puts "calling foo1"
+    puts "calling foo2"
   end
 
   def foo_both
