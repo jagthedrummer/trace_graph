@@ -27,5 +27,9 @@ module TraceGraph
     def first
       sub_nodes.first
     end
+
+    def second
+      sub_nodes[1]
+    end
   end
 end

@@ -68,6 +68,7 @@ RSpec.describe TraceGraph::Tracer do
     end
     expect(tracer.node_count).to eq(7)
     expect(tracer.call_trace.first.node_count).to eq(2)
+    expect(tracer.call_trace.second.node_count).to eq(3)
   end
 
   it "generates a png without marking duplicates" do
@@ -80,5 +81,6 @@ RSpec.describe TraceGraph::Tracer do
     end
     expect(tracer.node_count).to eq(7)
     expect(tracer.call_trace.first.node_count).to eq(2)
+    expect(tracer.call_trace.second.node_count).to eq(3)
   end
 end
