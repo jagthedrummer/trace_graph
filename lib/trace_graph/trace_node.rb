@@ -11,5 +11,9 @@ module TraceGraph
     def << child_node
       sub_nodes << child_node
     end
+
+    def node_count
+      sub_nodes.length
+    end
   end
 end
