@@ -24,4 +24,11 @@ RSpec.describe TraceGraph::Tracer do
     tracer.trace { foo.foo_both }
     expect(tracer.node_count).to eq(0)
   end
+
+  it "generates an empty graph if included_paths is nil but the path is excluded" do
+    foo = Foo.new
+    tracer = TraceGraph::Tracer.new({ included_paths: nil, excluded_paths: ["foo"] })
+    tracer.trace{ foo.foo_both }
+    expect(tracer.node_count).to eq(0)
+  end
 end
