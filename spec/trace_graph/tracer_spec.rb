@@ -47,4 +47,14 @@ RSpec.describe TraceGraph::Tracer do
     tracer.trace{ foo.foo_both }
     expect(tracer.node_count).to eq(0)
   end
+
+  it "can trace multiple calls in the block" do
+    foo = Foo.new
+    tracer = TraceGraph::Tracer.new({ included_paths: nil, include_protected: true })
+    tracer.trace do
+      foo.foo_both
+      foo.foo_both_with_private
+    end
+    expect(tracer.node_count).to eq(7)
+  end
 end
