@@ -5,6 +5,7 @@ module TraceGraph
       # We check included paths differently than excluded ones to allow nil to be bassed, to include everyting
       @included_paths = options.key?(:included_paths) ? options[:included_paths] : []
       @excluded_paths = options[:excluded_paths] || []
+      @include_protected = options[:include_protected] || false
       @trace_point = build_trace_point
       @top_nodes = []
       @stack = []
@@ -80,7 +81,7 @@ module TraceGraph
       klass = tp.defined_class
       method = tp.method_id
       public_methods = klass.public_methods(false) + klass.public_instance_methods(false)
-      unless public_methods.include?(method)
+      unless public_methods.include?(method) || @include_protected
         should_include = false
       end
       return should_include

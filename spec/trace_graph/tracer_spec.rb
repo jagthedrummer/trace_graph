@@ -25,6 +25,22 @@ RSpec.describe TraceGraph::Tracer do
     expect(tracer.node_count).to eq(0)
   end
 
+  it "excluded private methods by default" do
+    foo = Foo.new
+    tracer = TraceGraph::Tracer.new({ included_paths: nil })
+    tracer.trace{ foo.foo_both_with_private }
+    expect(tracer.node_count).to eq(3)
+    expect(tracer.call_trace.first.node_count).to eq(2)
+  end
+
+  it "can include protected methods" do
+    foo = Foo.new
+    tracer = TraceGraph::Tracer.new({ included_paths: nil, include_protected: true })
+    tracer.trace{ foo.foo_both_with_private }
+    expect(tracer.node_count).to eq(4)
+    expect(tracer.call_trace.first.node_count).to eq(3)
+  end
+
   it "generates an empty graph if included_paths is nil but the path is excluded" do
     foo = Foo.new
     tracer = TraceGraph::Tracer.new({ included_paths: nil, excluded_paths: ["foo"] })
