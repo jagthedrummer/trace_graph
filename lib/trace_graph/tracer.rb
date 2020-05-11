@@ -54,7 +54,7 @@ module TraceGraph
     end
 
     def add_node graph, node, parent
-      label = node.labelsgsub("←","\n←").gsub("→","\n→")
+      label = node.label.gsub("←","\n←").gsub("→","\n→")
       gnode = graph.add_nodes(label)
       if node.is_duplicate
         gnode[:color] = "red:white"
@@ -125,7 +125,6 @@ module TraceGraph
     end
 
     def handle_return(tp)
-      puts "return value = #{tp.return_value}"
       label, _is_duplicate = build_node_label(tp, for_call: false)
       last_node = @stack.last
       if last_node && last_node.label == label
