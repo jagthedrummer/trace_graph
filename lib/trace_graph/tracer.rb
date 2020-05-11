@@ -54,7 +54,7 @@ module TraceGraph
     end
 
     def add_node graph, node, parent
-      label = node.label.gsub("←","\n←").gsub("→","\n→")
+      label = node.labelsgsub("←","\n←").gsub("→","\n→")
       gnode = graph.add_nodes(label)
       if node.is_duplicate
         gnode[:color] = "red:white"
@@ -88,8 +88,7 @@ module TraceGraph
       param_names.map { |n| [n, trace.binding.eval(n.to_s)] }.to_h
     end
 
-    def handle_call(tp)
-      parent = @stack.last
+    def build_node_label(tp, for_call: true)
       label = "#{tp.defined_class}##{tp.method_id}"
       args = extract_arguments(tp)
       if @show_arguments && args.any?
@@ -97,16 +96,24 @@ module TraceGraph
       end
       is_dupicate = false
       if @mark_duplicate_calls
-        if @unique_node_counts[label]
-          @unique_node_counts[label] += 1
-        else
-          @unique_node_counts[label] = 0
+        if for_call # we don't want to mess with the count on a return
+          if @unique_node_counts[label]
+            @unique_node_counts[label] += 1
+          else
+            @unique_node_counts[label] = 0
+          end
         end
-        if @unique_node_counts[label] > 0
+        if @unique_node_counts[label] && @unique_node_counts[label] > 0
           label = "#{label} (##{@unique_node_counts[label]+1})"
           is_duplicate = true
         end
       end
+      return label, is_duplicate
+    end
+
+    def handle_call(tp)
+      parent = @stack.last
+      label, is_duplicate = build_node_label(tp)
       new_node = TraceGraph::TraceNode.new(label, is_duplicate: is_duplicate)
       @stack << new_node
       @all_nodes << new_node
@@ -119,11 +126,14 @@ module TraceGraph
 
     def handle_return(tp)
       puts "return value = #{tp.return_value}"
-      if @show_return_values && tp.return_value
-        last_node = @stack.last
-        last_node.label = "#{last_node.label} ←(#{tp.return_value})"
+      label, _is_duplicate = build_node_label(tp, for_call: false)
+      last_node = @stack.last
+      if last_node && last_node.label == label
+        if @show_return_values && tp.return_value
+          last_node.label = "#{last_node.label} ←(#{tp.return_value})"
+        end
+        @stack.pop
       end
-      @stack.pop
     end
 
     def should_include_trace_line(tp)
