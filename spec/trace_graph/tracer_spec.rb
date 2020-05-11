@@ -57,4 +57,28 @@ RSpec.describe TraceGraph::Tracer do
     end
     expect(tracer.node_count).to eq(7)
   end
+
+  it "generates a png" do
+    foo = Foo.new
+    png = "tmp/trace_graph.png"
+    tracer = TraceGraph::Tracer.new({ included_paths: ["foo"], png: png, mark_duplicate_calls: true, include_protected: true })
+    tracer.trace do
+      foo.foo_both
+      foo.foo_both_with_private
+    end
+    expect(tracer.node_count).to eq(7)
+    expect(tracer.call_trace.first.node_count).to eq(2)
+  end
+
+  it "generates a png without marking duplicates" do
+    foo = Foo.new
+    png = "tmp/trace_graph_without_duplicates.png"
+    tracer = TraceGraph::Tracer.new({ included_paths: ["foo"], png: png, mark_duplicate_calls: false, include_protected: true })
+    tracer.trace do
+      foo.foo_both
+      foo.foo_both_with_private
+    end
+    expect(tracer.node_count).to eq(7)
+    expect(tracer.call_trace.first.node_count).to eq(2)
+  end
 end

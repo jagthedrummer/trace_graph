@@ -5,12 +5,14 @@ module TraceGraph
     include TreeGraph
     attr_accessor :label
     attr_accessor :sub_nodes
+    attr_accessor :is_duplicate
 
     alias_method :label_for_tree_graph, :label
     alias_method :children_for_tree_graph, :sub_nodes
 
-    def initialize(label)
+    def initialize(label, is_duplicate: false)
       self.label = label
+      self.is_duplicate = is_duplicate
       self.sub_nodes = []
     end
 
