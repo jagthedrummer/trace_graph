@@ -60,11 +60,16 @@ module TraceGraph
 
     def should_include_trace_line(tp)
       should_include = false
-      @included_paths.each do |path|
-        path = path.is_a?(String) ? /#{path}/ : path
-        if tp.inspect =~ path
-          should_include = true
+      if @included_paths
+        @included_paths.each do |path|
+          path = path.is_a?(String) ? /#{path}/ : path
+          if tp.inspect =~ path
+            should_include = true
+          end
         end
+      else
+        # If included_paths was passed as nil that means to include everything that's not excluded
+        should_include = true
       end
       @excluded_paths.each do |path|
         path = path.is_a?(String) ? /#{path}/ : path
