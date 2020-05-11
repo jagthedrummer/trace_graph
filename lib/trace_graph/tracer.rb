@@ -7,9 +7,9 @@ module TraceGraph
       @excluded_paths = options[:excluded_paths] || []
       @include_protected = options[:include_protected] || false
       @trace_point = build_trace_point
-      @top_nodes = []
+      @top_node = TraceGraph::TraceNode.new("trace")
       @stack = []
-      @all_nodes = []
+      @all_nodes = [@top_node]
     end
 
     def trace
@@ -19,14 +19,15 @@ module TraceGraph
       @trace_point.enable
       yield
       @trace_point.disable
+      puts @top_node.tree_graph
     end
 
     def call_trace
-      @top_nodes
+      @top_node
     end
 
     def node_count
-      @all_nodes.length
+      @all_nodes.length - 1 # should top_node count as a node?
     end
 
     private
@@ -51,7 +52,7 @@ module TraceGraph
       if parent
         parent << new_node
       else
-        @top_nodes << new_node
+        @top_node << new_node
       end
     end
 

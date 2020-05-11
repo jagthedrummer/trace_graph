@@ -21,5 +21,9 @@ module TraceGraph
     def node_count
       sub_nodes.length
     end
+
+    def first
+      sub_nodes.first
+    end
   end
 end
