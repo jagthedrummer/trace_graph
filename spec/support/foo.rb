@@ -1,27 +1,27 @@
 class Foo
-  def foo1(keyword_arg: nil)
-    puts "calling foo1"
-    return { wat: "foo1" }
+  def first_method(keyword_arg: nil)
+    #puts "calling first_method"
+    return { wat: "first_method" }
   end
 
-  def foo2(arg = nil, arg2 = 'wow')
-    puts "calling foo2"
+  def second_method(arg = nil, arg2 = 'wow')
+    #puts "calling second_method"
   end
 
   def foo_both
-    foo1(keyword_arg: 1)
-    foo2('bar')
+    first_method(keyword_arg: 1)
+    second_method('bar')
   end
 
   def foo_both_with_private
-    foo1(keyword_arg: 1)
-    foo_private
-    foo2('baz')
+    first_method(keyword_arg: 1)
+    private_method
+    second_method('baz')
   end
 
   private
 
-  def foo_private
-    puts "calling foo_private"
+  def private_method
+    #puts "calling private_method"
   end
 end
