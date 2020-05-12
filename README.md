@@ -82,10 +82,11 @@ in the graph.
   repeat calls to a method will be marked with a count, and will be colored red on the png.
 
 * `show_arguments` - Either `true` or `false`. Default value is `false`. When `true` the arguments
-  passed to each method call will be shown.
+  passed to each method call will be shown. (This doesn't work so well if there are lots of arguments
+  or some very large ones...)
 
 * `show_return_values` - Either `true` or `false`. Default value is `false`. When `true` the return
-  values from each method call will be shown.
+  values from each method call will be shown. (This doesn't work so well for lots or large return values.)
 
 A robust tracer might look like this:
 
