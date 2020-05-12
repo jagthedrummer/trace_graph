@@ -6,14 +6,16 @@ module TraceGraph
     attr_accessor :label
     attr_accessor :sub_nodes
     attr_accessor :is_duplicate
+    attr_accessor :class_name
 
     alias_method :label_for_tree_graph, :label
     alias_method :children_for_tree_graph, :sub_nodes
 
-    def initialize(label, is_duplicate: false)
+    def initialize(label, is_duplicate: false, class_name: nil)
       self.label = label
       self.is_duplicate = is_duplicate
       self.sub_nodes = []
+      self.class_name = class_name
     end
 
     def << child_node

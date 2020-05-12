@@ -11,6 +11,7 @@ module TraceGraph
       @mark_duplicate_calls = options.key?(:mark_duplicate_calls) ? options[:mark_duplicate_calls] : true
       @show_arguments = options[:show_arguments] || false
       @show_return_values = options[:show_return_values] || false
+      @only_class_transitions = options[:only_class_transitions] || false
 
       @trace_point = build_trace_point
       @top_node = TraceGraph::TraceNode.new("trace")
@@ -90,6 +91,10 @@ module TraceGraph
 
     def build_node_label(tp, for_call: true)
       label = "#{tp.defined_class}##{tp.method_id}"
+      if tp.defined_class.name != tp.self.class.name
+        label = "#{tp.self.class.name} -> #{label}"
+      end
+
       args = extract_arguments(tp)
       if @show_arguments && args.any?
         label = "#{label} →(#{args})"
@@ -112,9 +117,15 @@ module TraceGraph
     end
 
     def handle_call(tp)
+      if @only_class_transitions
+        last_node = @stack.last
+        if last_node && last_node.class_name == tp.self.class.name
+          return
+        end
+      end
       parent = @stack.last
       label, is_duplicate = build_node_label(tp)
-      new_node = TraceGraph::TraceNode.new(label, is_duplicate: is_duplicate)
+      new_node = TraceGraph::TraceNode.new(label, is_duplicate: is_duplicate, class_name: tp.self.class.name)
       @stack << new_node
       @all_nodes << new_node
       if parent
@@ -160,6 +171,7 @@ module TraceGraph
       unless public_methods.include?(method) || @include_protected
         should_include = false
       end
+      
       return should_include
     end
   end

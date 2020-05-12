@@ -1,11 +1,20 @@
 RSpec.describe TraceGraph::Tracer do
 
   require 'support/foo'
+  require 'support/bar'
 
   it "generates a basic graph if paths are matched" do
     foo = Foo.new
     tracer = TraceGraph::Tracer.new({ included_paths: ["foo"] })
     tracer.trace{ foo.foo_both }
+    expect(tracer.node_count).to eq(3)
+    expect(tracer.call_trace.first.node_count).to eq(2)
+  end
+
+  it "generates an even more basic graph if paths are matched and only_class_transitions is true" do
+    bar = Bar.new
+    tracer = TraceGraph::Tracer.new({ included_paths: ["spec/support"], only_class_transitions: true })
+    tracer.trace{ bar.do_foo_bar }
     expect(tracer.node_count).to eq(3)
     expect(tracer.call_trace.first.node_count).to eq(2)
   end
