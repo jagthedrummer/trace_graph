@@ -87,6 +87,28 @@ in the graph.
 * `show_return_values` - Either `true` or `false`. Default value is `false`. When `true` the return
   values from each method call will be shown.
 
+A robust tracer might look like this:
+
+```ruby
+tracer = TraceGraph::Tracer.new({
+  included_paths: ["my_app/app"],         # See everything local to a rails app
+  excluded_paths: ["my_app/app/helpers"], # Except the helpers
+  mark_duplicate_calls: true,
+  show_arguments: true,
+  show_return_values: true,
+  png: 'my_very_busy_trace.png'
+})
+```
+
+### Matching for `included_paths` and `excluded_paths`
+
+TraceGraph uses the ruby TracePoint class, and paths are matched on the `inspect` value
+for a trace. A typical `inspect` values looks like this:
+
+```
+#<TracePoint:call `first_method'@/Users/jgreen/projects/trace_graph/spec/support/foo.rb:2>
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
