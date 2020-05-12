@@ -93,8 +93,8 @@ A robust tracer might look like this:
 
 ```ruby
 tracer = TraceGraph::Tracer.new({
-  included_paths: ["my_app/app"],         # See everything local to a rails app
-  excluded_paths: ["my_app/app/helpers"], # Except the helpers
+  included_paths: ["my_app/app", "my_app/lib"], # See everything local to a rails app
+  excluded_paths: ["my_app/app/helpers"],       # Except the helpers
   mark_duplicate_calls: true,
   show_arguments: true,
   show_return_values: true,
