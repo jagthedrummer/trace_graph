@@ -23,7 +23,30 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+A simple use might look like this:
+
+```ruby
+foo = Foo.new
+tracer = TraceGraph::Tracer.new({ included_paths: ["foo"], png: 'foo_trace.png' })
+tracer.trace{ foo.foo_both }
+```
+
+You'd see output like this in your console:
+
+```
+trace
+└─Foo#foo_both
+  ├─Foo#first_method
+  └─Foo#second_method
+```
+
+And a graph like this would be generated at `foo_trace.png`
+
+
+![Document Worker Trace](docs/images/foo_trace.png)
+
+
+
 
 ## Development
 
