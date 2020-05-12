@@ -1,8 +1,9 @@
 # TraceGraph
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/trace_graph`. To experiment with that code, run `bin/console` for an interactive prompt.
+TraceGraph gives you visibility into the control flow of your application. Rather than read all the code
+trying to form a mental picture of it, let TraceGraph draw you a picture like this:
 
-TODO: Delete this and the text above, and describe your gem
+![Document Worker Trace](docs/images/document_worker_trace.png)
 
 ## Installation
 
