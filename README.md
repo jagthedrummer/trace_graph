@@ -76,7 +76,8 @@ in the graph.
 * `excluded_paths` - A list of paths to exclude. Maybe `["my_app/some_utility_helper"]`. Default
   value is `nil`.
 
-* `png` - A string path where to write a png graph.
+* `png` - A string path where to write a png graph. If no value is passed a png will not be generated
+  and only a text representation will be written to standar out.
 
 * `mark_duplicate_calls` - Either `true` or `false`. Default value is `false`. When `true` any
   repeat calls to a method will be marked with a count, and will be colored red on the png.
