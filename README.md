@@ -10,7 +10,7 @@ trying to form a mental picture of it, let TraceGraph draw you a picture like th
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'trace_graph'
+gem 'trace_graph', group: [:development, :test]
 ```
 
 And then execute:
