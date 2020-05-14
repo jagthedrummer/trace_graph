@@ -5,6 +5,49 @@ trying to form a mental picture of it, let TraceGraph draw you a picture like th
 
 ![Document Worker Trace](docs/images/document_worker_trace.png)
 
+Or it can generate a text based graph, like this:
+
+```
+trace
+└─DocumentGenerationWorker#perform
+  └─DocumentGenerator#generate_and_store_documents
+    └─OutputGenerationWorker#perform
+      └─OutputGenerator#generate_and_store_output
+        ├─OutputOwnerUtils#current_output
+        │ └─OutputOwnerUtils#current_outputs
+        ├─OutputGenerator#find_creator
+        ├─OutputUtils#local_path
+        │ └─Output#local_file_prefix
+        ├─Output#s3_path
+        │ └─OutputUtils#s3_filename
+        └─OutputGenerator#generate_and_store_output_implementation
+          ├─OutputUtils#markdown_path
+          │ └─Output#local_file_prefix (#2)
+          ├─OutputGenerator#generate_output
+          │ ├─Style#template_variable_hash
+          │ │ ├─Style#template_variables
+          │ │ └─Style#template
+          │ ├─Document#importurlsupported
+          │ ├─Account#current_subscription
+          │ │ └─Account#active_subscriptions
+          │ ├─Account#current_subscription (#2)
+          │ │ └─Account#active_subscriptions (#2)
+          │ ├─OutputUtils#markdown_path (#2)
+          │ │ └─Output#local_file_prefix (#3)
+          │ └─PdfCreator#create_pdf
+          │   ├─PdfCreator#localize_images
+          │   │ └─PdfCreator#find_image_tags_and_urls
+          │   ├─PdfCreator#process_liquid
+          │   ├─LatexHelper#make_dollars_safe
+          │   └─PdfCreator#build_pandoc_string
+          │     ├─PdfCreator#merged_variable_options
+          │     ├─PdfCreator#class_options
+          │     └─PdfCreator#add_pandoc_options
+          └─OutputGenerator#notify_output
+            └─PusherOutputNotifier#notify_output
+              └─Account#pusher_channel
+```
+
 ## Installation
 
 Add this line to your application's Gemfile:
