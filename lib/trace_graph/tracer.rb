@@ -171,7 +171,7 @@ module TraceGraph
       unless public_methods.include?(method) || @include_protected
         should_include = false
       end
-      
+
       return should_include
     end
   end
